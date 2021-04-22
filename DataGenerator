@@ -3,9 +3,10 @@
 #include <math.h>
 #include <string.h>
 
-int menu_selections(int n, char options[][20], char filtered_options[][20]);
+int menu_selections(int n, char[][20], char[][20]);
 int randnum(int, int);
-int timestamp_generator(int timestamp[][3]);
+int timestamp_generator(int[][3]);
+void pickup_time_generator(int, int[]);
 
 int main() {
 	
@@ -26,12 +27,17 @@ int main() {
 	//Generate a day full of orders
 	number_of_orders = timestamp_generator(timestamp);
 	
+	
+	//Generate pick-up times
+	int pickup_times[number_of_orders];
+	pickup_time_generator(number_of_orders, pickup_times);
+	
 	//Print timestamp and order
 	pointer = fopen("data.txt", "w");
 	for (i=0;i<number_of_orders;i++) {
 		ordernum = randnum(number_of_options, 1)-1;
-		printf("%02d:%02d:%02d, %s\n", timestamp[i][2], timestamp[i][1], timestamp[i][0], filtered_options[ordernum]);
-		fprintf(pointer, "%02d:%02d:%02d, %s\n", timestamp[i][2], timestamp[i][1], timestamp[i][0], filtered_options[ordernum]);
+		printf("%02d:%02d:%02d, %s, %d\n", timestamp[i][2], timestamp[i][1], timestamp[i][0], filtered_options[ordernum], pickup_times[i]);
+		fprintf(pointer, "%02d:%02d:%02d, %s, %d\n", timestamp[i][2], timestamp[i][1], timestamp[i][0], filtered_options[ordernum], pickup_times[i]);
 	}
 	fclose(pointer);
 	
@@ -134,4 +140,18 @@ int timestamp_generator(int timestamp[][3]) {
 	}
 	
 	return i;
+}
+
+
+//Function for determining estimated arrival time
+void pickup_time_generator(int n, int pickup_times[]) {
+	
+	//Multiplier modfies the randomly generated integer to fit it to predicted trend
+	float multiplier;
+	
+	//For loop builds the array with semi-randomized pickup times ranging from 15 to 180 minutes in advance
+	for (int i=0;i<n;i++) {
+		multiplier = (randnum(100, 1))/100.0;
+		pickup_times[i] = 15. * ceil(randnum(12, 1) * multiplier);
+	}
 }
