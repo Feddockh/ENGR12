@@ -3,13 +3,17 @@
 #include <math.h>
 #include <string.h>
 
-/* John Buttles, Hayden Feddock, Will Wojton
- * Engr 12 - Team 13
- * 
- * 
- * 
- * 
- */
+/* Hayden Feddock, Will Wojton, John Buttles
+ * ENGR 0012 - Team 13
+ * This code was written in mind for use in Pitt's cafeterias/food preparation areas.
+ * The user has the option of selecting what foods will be available for that day, then is able
+ * to view a large list of "orders" in the arrangement of time placed, meal chosen, and estimated
+ * pick up time for the student. The code randomly generates this data, with the time placed in
+ * chronological order, so the user can see a "live" look at students placing orders for meals.
+ * The user can also take a different path by typing "2" at the beginning, which sorts the randomly
+ * generated data by estimated pick up time to mimic priorities in a real life setting and displays
+ * the total amount for each type of meal for that day.
+*/
 
 
 //Function prototypes
