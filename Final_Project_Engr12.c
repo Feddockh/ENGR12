@@ -306,32 +306,33 @@ void sorting(int A[][3], int A_sorted[][3], int B[][3], int B_sorted[][3], char 
 }
 
 
-//Function for counting number of food items that need to be prepared
-void food_prep(char mealchoice[][20], int number_of_orders){
-	
-	int countpizza=0,countburger=0,countpasta=0,countsalad=0,counttaco=0,i;
+//Function for counting number of food items prepared throughout the day
+void food_prep(char mealchoice[20000][20], int number_of_orders){
+	int countpizza=0,countburger=0,countpasta=0,countsalad=0,counttaco=0,i;   //Sets up integers to count the number of each food item prepared throughout the day
 
-	for (i=0;i<number_of_orders;i++){
 	
-			if (mealchoice[i][0]=='P'){
-				if(mealchoice[i][1]=='i'){
-					countpizza=countpizza+1;
+for (i=0;i<number_of_orders;i++){		//runs through all rows of the data
+	
+				if (mealchoice[i][0]=='P'){		//searches for a P as the first letter of each row
+					if(mealchoice[i][1]=='i'){		//if a P is found, the second letter of the string is tested to see if it is the character i.
+						countpizza=countpizza+1;		//if the second letter of the string in the row is an i, one value is added to countpizza because that is the item being ordered
+					}
+					else if(mealchoice[i][1]=='a'){		//if the second letter of the string is an a, one value is added to countpasta because that is the item being ordered
+						countpasta=countpasta+1;
+					}
 				}
-				else if(mealchoice[i][1]=='a'){
-					countpasta=countpasta+1;
+				else if(mealchoice[i][0]=='S'){		//tests for the first letter of the string to be S
+					countsalad=countsalad+1;		//if true, one value is added to countsalad because that is the item being ordered
 				}
-			}
-			else if(mealchoice[i][0]=='S'){
-				countsalad=countsalad+1;
-			}
-			else if(mealchoice[i][0]=='T'){
-				counttaco=counttaco+1;
-			}
-			else if (mealchoice[i][0]=='B'){
-			countburger=countburger+1;
-		}
-	}
-	printf("\n\nThe number of Pizzas that need to be prepared today is %d\nThe number of Burgers that need to be prepared today is %d\nThe number of Pasta dishes that need to be prepared today is %d\nThe number of Salads that need to be prepared today is %d\nThe number of Tacos that need to be prepared today is %d", countpizza,countburger,countpasta,countsalad,counttaco);
+				else if(mealchoice[i][0]=='T'){		//tests for first letter of the string to be T
+					counttaco=counttaco+1;			//if true, one value is added to counttaco because that is the item being ordered
+				}
+				else if (mealchoice[i][0]=='B'){		//tests for the first letter of the string to be B
+				countburger=countburger+1;				//if true, adds one value to countburger because that is the item being ordered
+				}
+
 }
-
+	printf("The number of Pizzas that need to be prepared today is %d\nThe number of Burgers that need to be prepared today is %d\nThe number of Pasta dishes that need to be prepared today is %d\nThe number of Salads that need to be prepared today is %d\nThe number of Tacos that need to be prepared today is %d", countpizza,countburger,countpasta,countsalad,counttaco);
+	//prints out the number of each item prepared throughout the day
+}
 
