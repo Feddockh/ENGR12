@@ -3,6 +3,16 @@
 #include <math.h>
 #include <string.h>
 
+/* John Buttles, Hayden Feddock, Will Wojton
+ * Engr 12 - Team 13
+ * 
+ * 
+ * 
+ * 
+ */
+
+
+//Function prototypes
 int menu_selections(int n, char[][20], char[][20]);
 int randnum(int, int);
 int timestamp_generator(int[][3]);
@@ -52,6 +62,7 @@ int main() {
 		}
 		fclose(pointer);
 		
+		
 	} else if (funcselect == 2) {
 		//Sorting the data
 		//First we check to see if they want to pull from the same filename
@@ -97,7 +108,9 @@ int main() {
 		}
 		fclose(pointer);
 		
-		food_prep(mealchoice,number_of_orders);
+		
+		//Display the day's statistics
+		food_prep(mealchoice_sorted, number_of_orders);
 
 	} else printf("Error\n");
 	
@@ -168,6 +181,7 @@ int timestamp_generator(int timestamp[][3]) {
 	
 	//Using a forever loop to continue to increment seconds according the function
 	for (;;) {
+		
 		//Using a function depending on the hour to account for high-traffic times
 		float multiplier = (.006*pow((hours-12.5),2))+.4;
 		int upper = 60.*multiplier;
@@ -211,19 +225,25 @@ void pickup_time_generator(int n, int pickup_times[][3], int timestamp[][3]) {
 	
 	//For loop builds the array with semi-randomized pickup times ranging from 15 to 180 minutes in advance
 	for (int i=0;i<n;i++) {
+		
+		//Multiplier uses function that makes shorter added times more frequent
+		//since we expect people to be less likely to plan thier meals far in advance
 		multiplier = (randnum(100, 1))/100.0;
 		added_time = 15. * ceil(randnum(12, 1) * multiplier);
 		
+		//Add the added time to the next nearest quarter hour increment
 		pickup_times[i][0] = 0;
 		pickup_times[i][1] = ceil(timestamp[i][1]/15)*15+15 + added_time;
-		//printf("%d\n", pickup_times[i][1]);
 		
+		//Wrap the times around the 24 hours
 		pickup_times[i][2] = timestamp[i][2];
 		while (pickup_times[i][1] >= 60) {
 			pickup_times[i][1] -= 60;
 			pickup_times[i][2] += 1;
 		}
 		
+		//If the pickup times exceed 24 hours, we will assume that they actually
+		//crossover from the previous day instead of adding a new array column for days
 		if (pickup_times[i][2] > 24) {
 			pickup_times[i][2] -= 24;
 		}
@@ -262,9 +282,11 @@ void sorting(int A[][3], int A_sorted[][3], int B[][3], int B_sorted[][3], char 
 		//Scan through array A and update A_sorted[i] with the lowest value, also records the row in the A column being copied as A_row_trans
 		for (int j=1;j<(n-i);j++) {
 			
+			//Calculating the values in seconds to compare more easily
 			A_seconds = A[j][0] + A[j][1]*60 + A[j][2]*3600;
 			A_sorted_seconds = A_sorted[i][0] + A_sorted[i][1]*60 + A_sorted[i][2]*3600;
 			
+			//Comparing the seconds of each array and replacing with the lower array
 			if (A_sorted_seconds > A_seconds) {
 				A_sorted[i][0] = A[j][0];
 				A_sorted[i][1] = A[j][1];
@@ -308,31 +330,30 @@ void sorting(int A[][3], int A_sorted[][3], int B[][3], int B_sorted[][3], char 
 
 //Function for counting number of food items prepared throughout the day
 void food_prep(char mealchoice[20000][20], int number_of_orders){
+	
 	int countpizza=0,countburger=0,countpasta=0,countsalad=0,counttaco=0,i;   //Sets up integers to count the number of each food item prepared throughout the day
 
-	
-for (i=0;i<number_of_orders;i++){		//runs through all rows of the data
-	
-				if (mealchoice[i][0]=='P'){		//searches for a P as the first letter of each row
-					if(mealchoice[i][1]=='i'){		//if a P is found, the second letter of the string is tested to see if it is the character i.
-						countpizza=countpizza+1;		//if the second letter of the string in the row is an i, one value is added to countpizza because that is the item being ordered
+	for (i=0;i<number_of_orders;i++){	//runs through all rows of the data
+		
+					if (mealchoice[i][0]=='P'){		//searches for a P as the first letter of each row
+						if(mealchoice[i][1]=='i'){		//if a P is found, the second letter of the string is tested to see if it is the character i.
+							countpizza=countpizza+1;		//if the second letter of the string in the row is an i, one value is added to countpizza because that is the item being ordered
+						}
+						else if(mealchoice[i][1]=='a'){		//if the second letter of the string is an a, one value is added to countpasta because that is the item being ordered
+							countpasta=countpasta+1;
+						}
 					}
-					else if(mealchoice[i][1]=='a'){		//if the second letter of the string is an a, one value is added to countpasta because that is the item being ordered
-						countpasta=countpasta+1;
+					else if(mealchoice[i][0]=='S'){		//tests for the first letter of the string to be S
+						countsalad=countsalad+1;		//if true, one value is added to countsalad because that is the item being ordered
 					}
-				}
-				else if(mealchoice[i][0]=='S'){		//tests for the first letter of the string to be S
-					countsalad=countsalad+1;		//if true, one value is added to countsalad because that is the item being ordered
-				}
-				else if(mealchoice[i][0]=='T'){		//tests for first letter of the string to be T
-					counttaco=counttaco+1;			//if true, one value is added to counttaco because that is the item being ordered
-				}
-				else if (mealchoice[i][0]=='B'){		//tests for the first letter of the string to be B
-				countburger=countburger+1;				//if true, adds one value to countburger because that is the item being ordered
-				}
+					else if(mealchoice[i][0]=='T'){		//tests for first letter of the string to be T
+						counttaco=counttaco+1;			//if true, one value is added to counttaco because that is the item being ordered
+					}
+					else if (mealchoice[i][0]=='B'){		//tests for the first letter of the string to be B
+					countburger=countburger+1;				//if true, adds one value to countburger because that is the item being ordered
+					}
 
-}
+	}
 	printf("The number of Pizzas that need to be prepared today is %d\nThe number of Burgers that need to be prepared today is %d\nThe number of Pasta dishes that need to be prepared today is %d\nThe number of Salads that need to be prepared today is %d\nThe number of Tacos that need to be prepared today is %d", countpizza,countburger,countpasta,countsalad,counttaco);
 	//prints out the number of each item prepared throughout the day
 }
-
