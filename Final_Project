@@ -7,6 +7,7 @@ int menu_selections(int n, char[][20], char[][20]);
 int randnum(int, int);
 int timestamp_generator(int[][3]);
 void pickup_time_generator(int, int[][3], int[][3]);
+void sorting(int [][3], int [][3], int [][3], int [][3], char [][20], char [][20], int);
 
 int main() {
 	
@@ -82,9 +83,18 @@ int main() {
 		fclose(pointer);
 		
 		//Now we can begin sorting
+		int timestamp_sorted[number_of_orders][3], pickup_times_sorted[number_of_orders][3];
+		char mealchoice_sorted[number_of_orders][20];
+		sorting(pickup_times, pickup_times_sorted, timestamp, timestamp_sorted, mealchoice, mealchoice_sorted, number_of_orders);
 		
-		
-		
+		//Print the sorted list to screen and to datasorted file
+		pointer = fopen("datasorted.txt", "w");
+		printf("\n\nThe following list is in order by pickup time\n");
+		for (int i=0;i<number_of_orders;i++) {
+			fprintf(pointer, "%02d:%02d:%02d, %s %02d:%02d:%02d\n", timestamp_sorted[i][2], timestamp_sorted[i][1], timestamp_sorted[i][0], mealchoice_sorted[i], pickup_times_sorted[i][2], pickup_times_sorted[i][1], pickup_times_sorted[i][0]);
+			printf("%02d:%02d:%02d, %s %02d:%02d:%02d\n", timestamp_sorted[i][2], timestamp_sorted[i][1], timestamp_sorted[i][0], mealchoice_sorted[i], pickup_times_sorted[i][2], pickup_times_sorted[i][1], pickup_times_sorted[i][0]);
+		}
+		fclose(pointer);
 		
 		
 
@@ -217,7 +227,79 @@ void pickup_time_generator(int n, int pickup_times[][3], int timestamp[][3]) {
 			pickup_times[i][2] -= 24;
 		}
 		
+	}
+	
+}
+
+
+
+void sorting(int A[][3], int A_sorted[][3], int B[][3], int B_sorted[][3], char C[][20], char C_sorted[][20], int n) {
+	
+	//A_row_trans is used to signify which row in the A colomn is being moved
+	int A_row_trans;
+	int A_seconds, A_sorted_seconds;
+	
+	
+	//Outermost for loop is used to construct the B array with every interation
+	for (int i=0;i<n;i++) {
+
+		//Temporarily set the next value in the B array to the first row in the A array
+		A_sorted[i][0] = A[0][0];
+		A_sorted[i][1] = A[0][1];
+		A_sorted[i][2] = A[0][2];
 		
+		B_sorted[i][0] = B[0][0];
+		B_sorted[i][1] = B[0][1];
+		B_sorted[i][2] = B[0][2];
+		
+		for (int c=0;c<20;c++) {
+			C_sorted[i][c] = C[i][c];
+		}
+		
+		A_row_trans = 0;
+		
+		//Scan through array A and update B[i] with the lowest value, also records the row in the A column being copied as A_row_trans
+		for (int j=1;j<(n-i);j++) {
+			
+			A_seconds = A[j][0] + A[j][1]*60 + A[j][2]*3600;
+			A_sorted_seconds = A_sorted[i][0] + A_sorted[i][1]*60 + A_sorted[i][2]*3600;
+			
+			if (A_sorted_seconds > A_seconds) {
+				A_sorted[i][0] = A[j][0];
+				A_sorted[i][1] = A[j][1];
+				A_sorted[i][2] = A[j][2];
+				
+				B_sorted[i][0] = B[j][0];
+				B_sorted[i][1] = B[j][1];
+				B_sorted[i][2] = B[j][2];
+				
+				for (int c=0;c<20;c++) {
+					C_sorted[i][c] = C[j][c];
+				}
+				
+				A_row_trans = j;
+			}
+			
+		}
+		
+		//Moves everything below the row in the A colomn being copied up one row
+		for (int k=A_row_trans;k<(n-i-1);k++) {
+			
+			A[k][0] = A[k+1][0];
+			A[k][1] = A[k+1][1];
+			A[k][2] = A[k+1][2];
+			
+			B[k][0] = B[k+1][0];
+			B[k][1] = B[k+1][1];
+			B[k][2] = B[k+1][2];
+			
+			
+			for (int c=0;c<20;c++) {
+				C[k][c] = C[k+1][c];
+			}
+			
+			
+		}
 		
 	}
 	
